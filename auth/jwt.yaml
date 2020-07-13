@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cafe-ingress-auth
+  annotations:
+    nginx.com/jwt-key: "cafe-jwk" 
+    nginx.com/jwt-realm: "Cafe App"  
+    nginx.com/jwt-login-url: "https://login.example.com"
+spec:
+  rules:
+  - host: protected.example.com
+    http:
+      paths:
+      - path: /tea
+        backend:
+          serviceName: tea-svc
+          servicePort: 80

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws
+  template:
+    metadata:
+      labels:
+        app: ws
+    spec:
+      containers:
+      - name: ws
+        image: ravirdv/websocket-demo
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ws-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: ws
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ws-ingress
+  annotations:
+    nginx.org/websocket-services: "ws-svc"
+spec:
+  rules:
+  - host: ws.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ws-svc
+          servicePort: 80
