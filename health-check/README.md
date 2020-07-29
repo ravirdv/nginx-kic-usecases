@@ -40,7 +40,7 @@ tea-healthcheck-5d7ccccf4c-xbrs6   1/1     Running   0          7d16h
 
 - Get interactive shell access to any of the above three pods, and kill nginx process to simulate a failed app.
 ```
-kubectl exec -it tea-healthcheck-5d7ccccf4c-9zjt7 sh
+kubectl exec -it tea-healthcheck-5d7ccccf4c-9zjt7 -- sh
 pkill nginx
 ```
 
