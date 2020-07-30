@@ -26,10 +26,12 @@ Forwarding from [::1]:8080 -> 8080
 
 Dashboard can be access at http://127.0.0.1:8080/dashboard.html
 
-- On Dashboard, check ingress table for "tea-ingress-hc", you should be able to see health checks being performed on 3 pods.
+- On the N+ KIC Dashboard, locate the ingress table for the **tea-health-svc**. The table should be titled *default-tea-ingress-hc-healthy-tea.appdeck.io-tea-health-svc-80*
+- Notice in the table, three health check server entries appear, displaying the results of 3 active health checks containerized in Kuberenetes pods.
 
+- Next, tail the status log of all the Healthcheck service pods for the Tea application:
 ```
-➜  ~ kubectl get pods
+➜  ~ kubectl get po --selector=app=tea-healthcheck -w -n default
 NAME                               READY   STATUS    RESTARTS   AGE
 ...
 tea-healthcheck-5d7ccccf4c-78p2m   1/1     Running   0          7d16h
@@ -40,8 +42,9 @@ tea-healthcheck-5d7ccccf4c-xbrs6   1/1     Running   0          7d16h
 
 - Get interactive shell access to any of the above three pods, and kill nginx process to simulate a failed app.
 ```
-kubectl exec -it tea-healthcheck-5d7ccccf4c-9zjt7 sh
+kubectl exec -it tea-healthcheck-5d7ccccf4c-9zjt7 -- sh
 pkill nginx
 ```
 
-- Observe that this pod is marked down instantly and upon process restart, its added back to the upstream.
+- Observe from the status log of the Healthcheck service pods, this pod is marked down instantly and upon process restart, its added back to the upstream.
+- Observe the disapperance of one entry in the ingress table for the **tea-health-svc**, followed by the appearance of that entry after several seconds.
